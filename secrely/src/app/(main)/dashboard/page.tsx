@@ -120,11 +120,11 @@ export default function DashboardPage() {
         <h2 className="text-sm font-semibold text-foreground mb-3">{t.quickActions}</h2>
         <div className="grid grid-cols-2 gap-3">
           {[
-            { icon: PlusCircle, label: t.newPost, href: "/dashboard/new-post", variant: "purple" as const },
-            { icon: Users, label: t.viewAudience, href: "/explore", variant: "outline" as const },
-            { icon: DollarSign, label: t.wallet ?? "Earnings", href: "/wallet", variant: "outline" as const },
-            { icon: TrendingUp, label: t.analytics, href: "/dashboard", variant: "outline" as const },
-          ].map(({ icon: Icon, label, href, variant }) => (
+  { icon: PlusCircle, label: t.newPost, href: "/dashboard/new-post", variant: "purple" as const },
+  { icon: Users, label: t.viewAudience, href: "/explore", variant: "outline" as const },
+  { icon: DollarSign, label: "Wallet", href: "/wallet", variant: "outline" as const },
+  { icon: TrendingUp, label: t.analytics, href: "/dashboard", variant: "outline" as const },
+].map(({ icon: Icon, label, href, variant }) => (
             <Button key={label} variant={variant} size="sm" className="gap-2 h-10" asChild>
               <Link href={href}><Icon className="w-4 h-4" />{label}</Link>
             </Button>
