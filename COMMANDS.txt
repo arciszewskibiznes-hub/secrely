@@ -1,0 +1,76 @@
+========================================
+  SECRELY — EXACT TERMINAL COMMANDS
+========================================
+
+-----------------------------------------
+1. PROJECT SETUP (first time only)
+-----------------------------------------
+
+cd secrely
+npm install
+
+
+-----------------------------------------
+2. DEVELOPMENT SERVER
+-----------------------------------------
+
+npm run dev
+
+App runs at: http://localhost:3000
+
+
+-----------------------------------------
+3. PRODUCTION BUILD
+-----------------------------------------
+
+npm run build
+npm run start
+
+
+-----------------------------------------
+4. LINTING
+-----------------------------------------
+
+npm run lint
+
+
+-----------------------------------------
+5. IMPORTANT PACKAGE NOTE
+-----------------------------------------
+
+This fixed project does NOT use @radix-ui/react-badge.
+Badge is a local UI component in:
+  src/components/ui/badge.tsx
+
+If npm install ever fails because of @radix-ui/react-badge,
+it means you are using an older broken package.json.
+Use the fixed package.json from this project.
+
+
+-----------------------------------------
+6. NO shadcn/ui CLI NEEDED
+-----------------------------------------
+
+This project does NOT use the shadcn/ui CLI.
+All UI components are already included in:
+  src/components/ui/
+
+Do NOT run:
+  npx shadcn-ui init
+  npx shadcn-ui add [component]
+
+
+-----------------------------------------
+7. NO ENVIRONMENT VARIABLES NEEDED
+-----------------------------------------
+
+No .env file required.
+No API keys required.
+No database setup required.
+
+
+-----------------------------------------
+8. QUICK START (copy-paste)
+-----------------------------------------
+
+cd secrely && npm install && npm run dev

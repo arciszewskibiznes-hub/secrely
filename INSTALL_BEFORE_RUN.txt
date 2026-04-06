@@ -1,0 +1,134 @@
+========================================
+  SECRELY — INSTALL BEFORE RUNNING
+========================================
+
+-----------------------------------------
+NODE.JS VERSION REQUIREMENT
+-----------------------------------------
+
+Required: Node.js 18.17.0 or later
+Recommended: Node.js 20.x LTS
+Also works on newer versions like Node 22.
+
+Check your version:
+  node --version
+  npm --version
+
+
+-----------------------------------------
+INSTALLATION STEPS (WINDOWS CMD)
+-----------------------------------------
+
+Step 1: Open CMD in the project folder
+  cd secrely
+
+Step 2: Install dependencies
+  npm install
+
+Step 3: Start local dev server
+  npm run dev
+
+Step 4: Open in browser
+  http://localhost:3000
+
+
+-----------------------------------------
+WHAT IS ALREADY INCLUDED
+-----------------------------------------
+
+Everything needed is already declared in package.json.
+You do NOT need to install packages one by one.
+Just run:
+  npm install
+
+The fixed package list includes:
+- next
+- react
+- react-dom
+- typescript
+- @types/node
+- @types/react
+- @types/react-dom
+- tailwindcss
+- autoprefixer
+- postcss
+- motion
+- zustand
+- lucide-react
+- clsx
+- tailwind-merge
+- class-variance-authority
+- @radix-ui/react-dialog
+- @radix-ui/react-dropdown-menu
+- @radix-ui/react-avatar
+- @radix-ui/react-tabs
+- @radix-ui/react-toast
+- @radix-ui/react-switch
+- @radix-ui/react-slot
+- @radix-ui/react-separator
+- @radix-ui/react-label
+- @radix-ui/react-scroll-area
+- @radix-ui/react-progress
+- date-fns
+
+IMPORTANT:
+This project does NOT use @radix-ui/react-badge.
+Badge is implemented locally in src/components/ui/badge.tsx.
+
+
+-----------------------------------------
+NO EXTRA SETUP REQUIRED
+-----------------------------------------
+
+No .env file
+No database
+No Supabase
+No Firebase
+No Prisma
+No Stripe
+No shadcn/ui CLI init
+
+
+-----------------------------------------
+COMMON ERRORS & FIXES
+-----------------------------------------
+
+1) npm install fails with 404 for @radix-ui/react-badge
+Cause:
+  You are using the broken old package.json.
+Fix:
+  Remove this line from package.json:
+    "@radix-ui/react-badge": "^1.0.0"
+  Then run:
+    npm install
+
+2) Port 3000 already in use
+Fix:
+  npm run dev -- -p 3001
+
+3) Clean reinstall on Windows CMD
+Fix:
+  rmdir /s /q node_modules
+  del package-lock.json
+  npm cache verify
+  npm install
+
+4) Clean reinstall on PowerShell
+Fix:
+  Remove-Item -Recurse -Force node_modules
+  Remove-Item package-lock.json
+  npm cache verify
+  npm install
+
+5) motion/react error
+Fix:
+  npm install
+  The project uses the motion package, not framer-motion.
+
+
+-----------------------------------------
+PRODUCTION BUILD
+-----------------------------------------
+
+npm run build
+npm run start

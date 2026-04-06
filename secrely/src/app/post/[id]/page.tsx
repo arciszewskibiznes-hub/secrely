@@ -1,0 +1,174 @@
+"use client";
+
+import { useState } from "react";
+import { notFound } from "next/navigation";
+import Image from "next/image";
+import Link from "next/link";
+import { motion } from "motion/react";
+import { Heart, MessageCircle, Eye, Lock, Bookmark, Send, ArrowLeft } from "lucide-react";
+import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
+import { Button } from "@/components/ui/button";
+import { Input } from "@/components/ui/input";
+import { Badge } from "@/components/ui/badge";
+import { UnlockModal } from "@/components/UnlockModal";
+import { getPostById } from "@/data/posts";
+import { useUnlockedStore } from "@/store/unlockedStore";
+import { formatNumber, timeAgo, getInitials } from "@/lib/utils";
+import { cn } from "@/lib/utils";
+
+const MOCK_COMMENTS = [
+  { id: "c1", author: "Maya L.", avatar: "https://images.unsplash.com/photo-1438761681033-6461ffad8d80?w=50&h=50&fit=crop&crop=faces", text: "This is absolutely stunning. The light work here is unreal.", time: "2h ago" },
+  { id: "c2", author: "James K.", avatar: "https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?w=50&h=50&fit=crop&crop=faces", text: "Been following your work for 2 years — this might be your best yet.", time: "4h ago" },
+  { id: "c3", author: "Priya S.", avatar: "https://images.unsplash.com/photo-1494790108755-2616b612b69c?w=50&h=50&fit=crop&crop=faces", text: "Thank you for including the location guide — heading there in September!", time: "6h ago" },
+];
+
+export default function PostDetailPage({ params }: { params: { id: string } }) {
+  const post = getPostById(params.id);
+  if (!post) notFound();
+
+  const [liked, setLiked] = useState(false);
+  const [likeCount, setLikeCount] = useState(post.likeCount);
+  const [showUnlock, setShowUnlock] = useState(false);
+  const [comment, setComment] = useState("");
+  const { isUnlocked } = useUnlockedStore();
+  const unlocked = !post.isLocked || isUnlocked(post.id);
+
+  return (
+    <>
+      <div className="space-y-4">
+        {/* Back */}
+        <Link href="/feed" className="inline-flex items-center gap-1.5 text-sm text-muted-foreground hover:text-foreground transition-colors">
+          <ArrowLeft className="w-4 h-4" /> Back to feed
+        </Link>
+
+        <motion.div
+          initial={{ opacity: 0, y: 12 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ duration: 0.35, ease: [0.16, 1, 0.3, 1] }}
+          className="card-base overflow-hidden"
+        >
+          {/* Creator */}
+          <div className="flex items-center gap-3 p-4">
+            <Link href={`/creator/${post.creator.username}`}>
+              <Avatar className="w-10 h-10">
+                <AvatarImage src={post.creator.avatar} />
+                <AvatarFallback>{getInitials(post.creator.displayName)}</AvatarFallback>
+              </Avatar>
+            </Link>
+            <div className="flex-1">
+              <Link href={`/creator/${post.creator.username}`} className="text-sm font-semibold hover:text-[hsl(270,75%,60%)] transition-colors">
+                {post.creator.displayName}
+              </Link>
+              <div className="text-xs text-muted-foreground">{timeAgo(post.createdAt)}</div>
+            </div>
+            {post.isLocked && (
+              <Badge variant={unlocked ? "success" : "purple"}>
+                {unlocked ? "Unlocked" : `${post.price} credits`}
+              </Badge>
+            )}
+          </div>
+
+          {/* Image */}
+          {post.thumbnail && (
+            <div className="relative aspect-square bg-secondary">
+              <Image
+                src={post.thumbnail}
+                alt={post.teaserText}
+                fill
+                className={cn("object-cover", post.isLocked && !unlocked && "locked-blur")}
+                sizes="(max-width: 640px) 100vw, 640px"
+              />
+              {post.isLocked && !unlocked && (
+                <div className="absolute inset-0 locked-overlay flex flex-col items-center justify-center gap-4">
+                  <div className="w-14 h-14 rounded-2xl purple-gradient flex items-center justify-center shadow-lg purple-glow">
+                    <Lock className="w-6 h-6 text-white" />
+                  </div>
+                  <div className="text-center">
+                    <p className="font-semibold text-foreground">Premium Content</p>
+                    <p className="text-sm text-muted-foreground mt-0.5">Unlock for {post.price} credits</p>
+                  </div>
+                  <Button variant="purple" onClick={() => setShowUnlock(true)}>
+                    Unlock Now
+                  </Button>
+                </div>
+              )}
+            </div>
+          )}
+
+          {/* Actions */}
+          <div className="px-4 pt-3 pb-2 flex items-center justify-between">
+            <div className="flex items-center gap-4">
+              <button
+                onClick={() => { setLiked((l) => !l); setLikeCount((c) => liked ? c - 1 : c + 1); }}
+                className={cn("flex items-center gap-1.5 text-sm transition-all", liked ? "text-rose-500" : "text-muted-foreground hover:text-foreground")}
+              >
+                <Heart className={cn("w-5 h-5", liked && "fill-current scale-110")} />
+                <span>{formatNumber(likeCount)}</span>
+              </button>
+              <span className="flex items-center gap-1.5 text-sm text-muted-foreground">
+                <MessageCircle className="w-5 h-5" />
+                <span>{formatNumber(post.commentCount)}</span>
+              </span>
+              <span className="flex items-center gap-1.5 text-sm text-muted-foreground">
+                <Eye className="w-5 h-5" />
+                <span>{formatNumber(post.viewCount)}</span>
+              </span>
+            </div>
+            <button className="text-muted-foreground hover:text-[hsl(270,75%,60%)] transition-colors">
+              <Bookmark className="w-5 h-5" />
+            </button>
+          </div>
+
+          {/* Caption */}
+          <div className="px-4 pb-3">
+            <p className="text-sm text-foreground leading-relaxed">
+              {unlocked ? post.caption : post.teaserText}
+            </p>
+            <div className="flex flex-wrap gap-1.5 mt-2.5">
+              {post.tags.map((tag) => (
+                <span key={tag} className="text-xs text-[hsl(270,75%,60%)] bg-purple-50 rounded-full px-2.5 py-0.5 font-medium">#{tag}</span>
+              ))}
+            </div>
+          </div>
+        </motion.div>
+
+        {/* Comments */}
+        <div className="card-base p-4 space-y-4">
+          <h3 className="text-sm font-semibold text-foreground">Comments ({post.commentCount})</h3>
+          <div className="space-y-4">
+            {MOCK_COMMENTS.map((c) => (
+              <div key={c.id} className="flex gap-3">
+                <Avatar className="w-8 h-8 flex-shrink-0">
+                  <AvatarImage src={c.avatar} />
+                  <AvatarFallback className="text-xs">{c.author[0]}</AvatarFallback>
+                </Avatar>
+                <div className="flex-1 min-w-0">
+                  <div className="flex items-center gap-2 mb-0.5">
+                    <span className="text-xs font-semibold text-foreground">{c.author}</span>
+                    <span className="text-xs text-muted-foreground">{c.time}</span>
+                  </div>
+                  <p className="text-sm text-foreground leading-relaxed">{c.text}</p>
+                </div>
+              </div>
+            ))}
+          </div>
+
+          {/* Comment input */}
+          <div className="flex gap-2 pt-2 border-t border-border">
+            <Input
+              placeholder="Add a comment…"
+              value={comment}
+              onChange={(e) => setComment(e.target.value)}
+              className="flex-1"
+            />
+            <Button size="icon" variant="purple" disabled={!comment.trim()} onClick={() => setComment("")}>
+              <Send className="w-4 h-4" />
+            </Button>
+          </div>
+        </div>
+      </div>
+
+      <UnlockModal open={showUnlock} onClose={() => setShowUnlock(false)} post={post} />
+    </>
+  );
+}
