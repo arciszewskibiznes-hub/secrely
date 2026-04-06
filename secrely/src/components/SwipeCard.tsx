@@ -8,6 +8,7 @@ import {
   useTransform,
   useAnimation,
   type PanInfo,
+  type MotionValue,
 } from "motion/react";
 import {
   Lock,
@@ -172,8 +173,8 @@ interface CardInnerProps {
   unlocked: boolean;
   isDragging: boolean;
   dragDir: "left" | "right" | null;
-  skipOpacity: ReturnType<typeof useTransform> | null;
-  saveOpacity: ReturnType<typeof useTransform> | null;
+  skipOpacity: MotionValue<number> | null;
+  saveOpacity: MotionValue<number> | null;
 }
 
 function CardInner({ post, unlocked, isDragging, dragDir, skipOpacity, saveOpacity }: CardInnerProps) {
